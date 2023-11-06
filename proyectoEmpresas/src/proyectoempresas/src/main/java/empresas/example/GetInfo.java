@@ -28,128 +28,164 @@ public class GetInfo {
     private String companyName; 
 
     // -------- PEDIR INFORMACIÓN ----------
-    public GetInfo(){
-        frame = new JFrame("Información");
-        frame.setSize(900, 600);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.setLocationRelativeTo(null);
-        frame.getContentPane().setBackground(Color.BLACK);
+    package empresas.example;
 
-        // Título
-        JLabel titleLabel = new JLabel("Información");
-        titleLabel.setHorizontalAlignment(JLabel.CENTER);
-        titleLabel.setForeground(Color.WHITE);
-        frame.add(titleLabel, BorderLayout.NORTH);
+import java.util.Scanner;
 
-        JPanel inputPanel = new JPanel(new GridBagLayout()); // Grid para desplegar la info
-        GridBagConstraints griid = new GridBagConstraints();
-        griid.insets = new Insets(5, 5, 5, 5); // espacio entre casda uno
+public class GetInfo {
 
-        labels = new JLabel[9];
-        textFields = new JTextField[9];
+    public static double calculateTotalFixedCosts() {
+        Scanner scanner = new Scanner(System.in);
 
-        Font questionFont = new Font( "Trebuchet MS", Font.BOLD, 16);  // estilo preguntas
-        Font textFieldFont = new Font( "Trebuchet MS", Font.PLAIN, 18); // estilo respuestas
+        System.out.println("Calcular tus costos fijos mensuales");
+        System.out.println("Los costos fijos son aquellos que no varían con las ventas o el volumen porque están basados en el tiempo. Para este cálculo, el período de tiempo es mensual.");
+        
+        String knowTotalFixedCosts;
+        double totalFixedCosts = 0.0;
 
-        // preguntas
-        String[] preguntas ={
-            "¿Cuántos productos tiene en su inventario?",
-            "¿Cuál es el valor total de su inventario?",
-            "¿Cuántos empleados tiene en su empresa?",
-            "¿Cuál es su presupuesto anual?",
-            "¿Cuál es el costo promedio de mantenimiento de sus equipo por mes?",
-            "¿Cuántos equipos o activos físicos importantes posee la empresa?",
-            "¿Cuál es su presupuesto asignado para el personal?",
-            "¿Cuál es su presupuesto para gastos de operación por mes?",
-            "¿Cuál es su ingreso mensual promedio?"
-        };
-
-        // field de las respuestas
-        for ( int i =  0; i < 9; i++ ) {
-            labels[i] = new JLabel(preguntas[i]);
-            labels[i].setFont(questionFont);
-            labels[i].setForeground(Color.WHITE);
-
-            textFields[i] = new JTextField();
-            textFields[i].setBackground(Color.BLACK);
-            textFields[i].setForeground(Color.WHITE);
-            textFields[i].setFont(textFieldFont) ;
-            textFields[i].setPreferredSize(new Dimension(150, 35));
-            textFields[i].setMinimumSize(new Dimension(150, 35));
-            textFields[i].setMaximumSize(new Dimension(150, 35)) ;
-
-            griid.gridx =  0;
-            griid.gridy = i ;
-            griid.anchor = GridBagConstraints.EAST;
-            inputPanel.add(labels[i], griid );
-
-            griid.gridx  = 1;
-            griid.anchor = GridBagConstraints.WEST;
-            inputPanel.add(textFields[i] , griid);
-        }
-
-        // para el nombre 
-        griid.gridx = 0;
-        griid.gridy = 9; // se coloca abajo
-        griid.anchor = GridBagConstraints.EAST;
-        JLabel companyLabel = new JLabel ( "Nombre de la empresa:" );
-        companyLabel.setFont(questionFont);
-        companyLabel.setForeground(Color.WHITE);
-        inputPanel.add(companyLabel, griid);
-
-        griid.gridx = 1;
-        griid.anchor = GridBagConstraints.WEST;
-        nameEmpresa = new JTextField();
-        nameEmpresa.setBackground(Color.BLACK);
-        nameEmpresa.setForeground(Color.WHITE);
-        nameEmpresa.setFont(textFieldFont);
-        nameEmpresa.setPreferredSize(new Dimension(200, 35)); // Tamaño del campo de nombre
-        inputPanel.add(nameEmpresa, griid);
-
-        frame.add(inputPanel, BorderLayout.CENTER );
-
-        JButton guardarBoton  = new JButton("Guardar Información" );
-        guardarBoton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                saveRespuestas();
+        while (true) {
+            System.out.print("\n¿Conoces el total de tus costos fijos mensuales? (1 = Sí, 2 = No): ");
+            knowTotalFixedCosts = scanner.nextLine();
+            if (knowTotalFixedCosts.equals("1") || knowTotalFixedCosts.equals("2")) {
+                break;
+            } else {
+                System.out.println("\nOpción inválida. Por favor, ingresa 1 para Sí o 2 para No.");
             }
         }
-    );
 
-        frame.add(guardarBoton, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
-    }
-
-    private void saveRespuestas(){
-        try{
-            cantidadProductosInventario = Integer.parseInt(textFields[0].getText());
-            valorTotalInventario = Double.parseDouble(textFields[1].getText());
-            cantidadEmpleados = Integer.parseInt(textFields[2].getText());
-            presupuestoAnual = Double.parseDouble(textFields[3].getText());
-            costoMantenimientoEquipos = Integer.parseInt(textFields[4].getText());
-            cantidadEquipos = Integer.parseInt(textFields[5].getText());
-            presupuestoPersonal = Integer.parseInt(textFields[6].getText());
-            presupuestoGastosOperacion = Double.parseDouble(textFields[7].getText());
-            ingresoMensualPromedio = Double.parseDouble(textFields[8].getText());
-
-            // Obtener el nombre de la empresa
-            companyName = nameEmpresa.getText();
-
-            // Cerrar la ventana
-            frame.dispose();
-
-            // abrir mainpage
-            Controlador controlador = new Controlador();
-            controlador.MainPage();
-
-        } 
-        catch (NumberFormatException ex){
-            JOptionPane.showMessageDialog(frame, "Ingrese datos válidos.", "Error por dato inválido", JOptionPane.ERROR_MESSAGE);
+        if (knowTotalFixedCosts.equals("1")) {
+            System.out.print("Total mensual de costos fijos: $");
+            totalFixedCosts = scanner.nextDouble();
+        } else if (knowTotalFixedCosts.equals("2")) {
+            System.out.println("Debes ingresar los siguientes costos fijos individualmente:");
+            totalFixedCosts = inputIndividualFixedCosts();
         }
+
+        return totalFixedCosts;
     }
+
+    public static double calculateSellingPricePerUnit() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("\nCalcular el precio al que venderás tus unidades o servicios");
+        System.out.print("Precio por unidad: $");
+        return scanner.nextDouble();
+    }
+
+    public static int calculateExpectedUnitSales() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("\nEstablecer el número de unidades que esperas vender");
+        System.out.print("Número de unidades a vender: ");
+        return scanner.nextInt();
+    }
+
+    public static double calculateVariableCosts() {
+        Scanner scanner = new Scanner(System.in);
+    
+        System.out.println("\nCalcular los costos variables por unidad");
+        
+        String knowVariableCostPerUnit;
+        
+        while (true) {
+            System.out.print("\n¿Conoces el costo variable por unidad? (1 = Sí, 2 = No): ");
+            knowVariableCostPerUnit = scanner.nextLine();
+            if (knowVariableCostPerUnit.equals("1") || knowVariableCostPerUnit.equals("2")) {
+                break;
+            } else {
+                System.out.println("\nOpción inválida. Por favor, ingresa 1 para Sí o 2 para No.");
+            }
+        }
+    
+        if (knowVariableCostPerUnit.equals("1")) {
+            System.out.print("Costos variables mensuales totales: $");
+            return scanner.nextDouble();
+        } else if (knowVariableCostPerUnit.equals("2")) {
+            System.out.println("Debes ingresar los siguientes costos variables individualmente:");
+            return inputIndividualVariableCosts();
+        }
+    
+        return 0.0;
+    }
+    
+    public static double inputIndividualFixedCosts() {
+        Scanner scanner = new Scanner(System.in);
+
+        double totalFixedCosts = 0.0;
+        String[] fixedCosts = {
+            "Amortización",
+            "Alquiler",
+            "Seguro",
+            "Salarios",
+            "Servicios públicos",
+            "Depreciación",
+            "Gastos de interés",
+            "Impuestos sobre la propiedad",
+            "Otros costos mensuales",
+            "Otros costos fijos adicionales"
+        };
+
+        for (String cost : fixedCosts) {
+            System.out.print(cost + ": $");
+            totalFixedCosts += scanner.nextDouble();
+        }
+
+        return totalFixedCosts;
+    }
+
+    public static double inputIndividualVariableCosts() {
+        Scanner scanner = new Scanner(System.in);
+
+        double totalVariableCosts = 0.0;
+        String[] variableCosts = {
+            "Materiales directos",
+            "Mano de obra por pieza",
+            "Suministros de producción",
+            "Comisiones",
+            "Flete de salida",
+            "Otros costos variables adicionales"
+        };
+
+        for (String cost : variableCosts) {
+            System.out.print(cost + ": $");
+            totalVariableCosts += scanner.nextDouble();
+        }
+
+        return totalVariableCosts;
+    }
+
+    public void showResults() {
+        double totalFixedCosts = calculateTotalFixedCosts();
+        double sellingPricePerUnit = calculateSellingPricePerUnit();
+        int unitsToSell = calculateExpectedUnitSales();
+        double variableCostsPerUnit = calculateVariableCosts();
+
+        // Calcular los resultados
+        double breakEvenUnits = totalFixedCosts / (sellingPricePerUnit - variableCostsPerUnit);
+        double breakEvenRevenue = breakEvenUnits * sellingPricePerUnit;
+        double contributionMarginRatio = ((sellingPricePerUnit - variableCostsPerUnit) / sellingPricePerUnit) * 100;
+
+        // Mostrar los resultados
+        System.out.println("\n--- Resultados del Punto de Equilibrio ---");
+        System.out.println("Unidades necesarias para cubrir tus costos: " + breakEvenUnits + " unidades");
+        System.out.println("Si vendes tus " + unitsToSell + " unidades previstas, tu ganancia será: $" + (unitsToSell * sellingPricePerUnit - unitsToSell * variableCostsPerUnit - totalFixedCosts));
+        System.out.println("Ventas por unidad: $" + breakEvenRevenue);
+        System.out.println("Índice de margen de contribución: " + contributionMarginRatio + "%");
+
+        // Mostrar los datos ingresados por el usuario
+        System.out.println("\nPerfil de Punto de Equilibrio: ");
+        System.out.println("# de unidades");
+        System.out.println(unitsToSell);
+        System.out.println("Precio por Unidad:");
+        System.out.println("$" + sellingPricePerUnit);
+        System.out.println("Costos Fijos");
+        System.out.println("$" + totalFixedCosts);
+        System.out.println("Costos Variables por Unidad");
+        System.out.println("$" + variableCostsPerUnit);
+        
+    }
+}
+
 
 
 }
