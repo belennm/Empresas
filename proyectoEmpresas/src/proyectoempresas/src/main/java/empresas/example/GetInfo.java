@@ -1,191 +1,288 @@
 package empresas.example;
 
 import javax.swing.*;
+
+import com.opencsv.CSVWriter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 
 /**
- * Clase que representa la información de la empresa.
+ * Clase que representa la obtención de información.
  */
 public class GetInfo {
 
-    private JFrame frame;
-    private JLabel[] labels;
-    private JTextField[] textFields;
-    private JTextField nameEmpresa; 
+    private JFrame frame; 
+    private JPanel panel;
+    private JButton butCalculate;
+    private JButton butInFixedCosts;
+    private JButton butInputVariableCosts;
+    private JTextField total_FixedCosts;
+    private JTextField precioXUnit;
+    private JTextField UnitsSell;
+    private JTextField variableCostsXUnidad;
+    private JTextArea result_area;
 
-    // declaración de variables para almacenar respuestas
-    private int cantidadProductosInventario;
-    private double valorTotalInventario;
-    private int cantidadEmpleados;
-    private double presupuestoAnual;
-    private int costoMantenimientoEquipos;
-    private int cantidadEquipos;
-    private double presupuestoGastosOperacion;
-    private double ingresoMensualPromedio;
-    private int presupuestoPersonal;
-    private String companyName; 
+    //  los nombres de los costos fijos y variables  para solicitarlos en individual
+    private String[] fixedCost_nombres = {
+            "Amortización", "Alquiler", "Seguro" , "Salarios", "Servicios públicos", "Depreciación", "Gastos de interés", "Impuestos sobre la propiedad" , "Otros costos mensuales" , "Otros costos fijos adicionales"
+    };
 
-    // -------- PEDIR INFORMACIÓN ----------
-    package empresas.example;
+    private String[] variableCost_nombres = 
+    {
+            "Materiales directos", "Mano de obra por pieza" , "Suministros de producción", "Comisiones", "Flete de salida" , "Otros costos variables adicionales"
+    };
 
-import java.util.Scanner;
+    // mapas para almacenar los JTextFields que se generaron para costos fijos y variables
+    private Map<String, JTextField> fixedCostFields = new HashMap<>();
+    private Map<String, JTextField> variableCostFields = new HashMap<>();
 
-public class GetInfo {
+    // obtención de información
+    public GetInfo(){
 
-    public static double calculateTotalFixedCosts() {
-        Scanner scanner = new Scanner(System.in);
+        // título de la ventana
+        frame =  new JFrame( "Calculadora de Punto de Equilibrio") ;
 
-        System.out.println("Calcular tus costos fijos mensuales");
-        System.out.println("Los costos fijos son aquellos que no varían con las ventas o el volumen porque están basados en el tiempo. Para este cálculo, el período de tiempo es mensual.");
+        // creación del nuevo panel
+        panel  = new JPanel( );
         
-        String knowTotalFixedCosts;
-        double totalFixedCosts = 0.0;
+        // para que se muestre verticalmente
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS ));
 
-        while (true) {
-            System.out.print("\n¿Conoces el total de tus costos fijos mensuales? (1 = Sí, 2 = No): ");
-            knowTotalFixedCosts = scanner.nextLine();
-            if (knowTotalFixedCosts.equals("1") || knowTotalFixedCosts.equals("2")) {
-                break;
-            } else {
-                System.out.println("\nOpción inválida. Por favor, ingresa 1 para Sí o 2 para No.");
+        // establecer el tamaño de cada Field
+        total_FixedCosts = new JTextField(10);
+        precioXUnit = new JTextField(10);
+        UnitsSell =  new JTextField(10);
+        variableCostsXUnidad = new JTextField(10);
+        result_area = new  JTextArea(10, 30);
+        frame.setSize(900, 600 ); // establecer el tamaño de la ventana
+        frame.setLocationRelativeTo(null); // centra la ventana
+
+        
+      
+
+        // botón para calcular
+        butCalculate = new JButton("Calcular Punto de Equilibrio" );
+        
+        // realiza la acción de calcular
+        butCalculate.addActionListener(new ActionListener(){
+
+            // acción para mostrar los cálculos
+            public void actionPerformed(ActionEvent e){
+                calcular_Show() ;
             }
-        }
 
-        if (knowTotalFixedCosts.equals("1")) {
-            System.out.print("Total mensual de costos fijos: $");
-            totalFixedCosts = scanner.nextDouble();
-        } else if (knowTotalFixedCosts.equals("2")) {
-            System.out.println("Debes ingresar los siguientes costos fijos individualmente:");
-            totalFixedCosts = inputIndividualFixedCosts();
-        }
+        });
 
-        return totalFixedCosts;
-    }
 
-    public static double calculateSellingPricePerUnit() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("\nCalcular el precio al que venderás tus unidades o servicios");
-        System.out.print("Precio por unidad: $");
-        return scanner.nextDouble();
-    }
-
-    public static int calculateExpectedUnitSales() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("\nEstablecer el número de unidades que esperas vender");
-        System.out.print("Número de unidades a vender: ");
-        return scanner.nextInt();
-    }
-
-    public static double calculateVariableCosts() {
-        Scanner scanner = new Scanner(System.in);
-    
-        System.out.println("\nCalcular los costos variables por unidad");
+        // botón para ingresar costos fijos por individual
+        butInFixedCosts = new JButton( "Ingresar Costos Fijos Individuales");
         
-        String knowVariableCostPerUnit;
-        
-        while (true) {
-            System.out.print("\n¿Conoces el costo variable por unidad? (1 = Sí, 2 = No): ");
-            knowVariableCostPerUnit = scanner.nextLine();
-            if (knowVariableCostPerUnit.equals("1") || knowVariableCostPerUnit.equals("2")) {
-                break;
-            } else {
-                System.out.println("\nOpción inválida. Por favor, ingresa 1 para Sí o 2 para No.");
+        butInFixedCosts.addActionListener( new ActionListener(){
+
+            // realizar la acción de performace para el botón
+            public void actionPerformed(ActionEvent e){
+                inputIndividualCosts(fixedCost_nombres, "fijos", fixedCostFields);
             }
-        }
-    
-        if (knowVariableCostPerUnit.equals("1")) {
-            System.out.print("Costos variables mensuales totales: $");
-            return scanner.nextDouble();
-        } else if (knowVariableCostPerUnit.equals("2")) {
-            System.out.println("Debes ingresar los siguientes costos variables individualmente:");
-            return inputIndividualVariableCosts();
-        }
-    
-        return 0.0;
-    }
-    
-    public static double inputIndividualFixedCosts() {
-        Scanner scanner = new Scanner(System.in);
 
-        double totalFixedCosts = 0.0;
-        String[] fixedCosts = {
-            "Amortización",
-            "Alquiler",
-            "Seguro",
-            "Salarios",
-            "Servicios públicos",
-            "Depreciación",
-            "Gastos de interés",
-            "Impuestos sobre la propiedad",
-            "Otros costos mensuales",
-            "Otros costos fijos adicionales"
-        };
+        });
 
-        for (String cost : fixedCosts) {
-            System.out.print(cost + ": $");
-            totalFixedCosts += scanner.nextDouble();
-        }
+        // botón para ingresar costos variables por individual
+        butInputVariableCosts = new  JButton( "Ingresar Costos Variables Individuales" );
+       
 
-        return totalFixedCosts;
+        butInputVariableCosts.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent e){
+                inputIndividualCosts(variableCost_nombres, "variables", variableCostFields);
+            }
+
+        } );
+
+        // añadir componentes al panel
+        panel.add( new JLabel( "Total de Costos Fijos: "));
+        panel.add(total_FixedCosts);
+        panel.add(butInFixedCosts);
+        panel.add(new JLabel("Precio por Unidad: ") );
+        panel.add( precioXUnit);
+        panel.add(new  JLabel("Unidades a Vender: "));
+        panel.add(UnitsSell);
+        panel.add(new  JLabel("Costo Variable por Unidad: "));
+        panel.add(variableCostsXUnidad );
+        panel.add(butInputVariableCosts );
+        panel.add(butCalculate);
+        panel.add(new JScrollPane(result_area ));
+
+        // crear el frame del panel
+        frame.add(panel);
+        frame.pack() ;
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
-    public static double inputIndividualVariableCosts() {
-        Scanner scanner = new Scanner(System.in);
+    //------------------------- DATOS INDIVIDUALES ------------------------------------------
+    // para solicitar costos individuales
+    private void inputIndividualCosts( String[]  costNames, String costType, Map<String, JTextField > fieldsMap ){
+        JPanel  costPanel =  new JPanel(new GridLayout(0, 2, 10, 10));
 
-        double totalVariableCosts = 0.0;
-        String[] variableCosts = {
-            "Materiales directos",
-            "Mano de obra por pieza",
-            "Suministros de producción",
-            "Comisiones",
-            "Flete de salida",
-            "Otros costos variables adicionales"
-        };
-
-        for (String cost : variableCosts) {
-            System.out.print(cost + ": $");
-            totalVariableCosts += scanner.nextDouble();
+        // ciclo for para que se muestren los datos por individuales y el espacio para solicitar
+        for(String costName :  costNames){
+             JLabel label = new JLabel( costName + ": $") ;
+            JTextField field =  new JTextField(10);
+           
+            fieldsMap.put(costName ,  field);
+            costPanel.add( label);
+            costPanel.add(field);
         }
 
-        return totalVariableCosts;
+        // opción para ingresar datos
+        int result  = JOptionPane.showConfirmDialog(frame, costPanel, "Ingrese los costos " +  costType , JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE );
+
+                // si se ingresan datos, comprobar que se ingresen datos y que los datos ingresados sean válidos
+                if(result == JOptionPane.OK_OPTION ){
+                    // sumar y actualizar los costos fijos
+                    double totalFixedCost  = 0 ;
+                    for( Map.Entry<String, JTextField > entry : fixedCostFields.entrySet()){
+                       // try and catch para 
+                        try{
+                            double value =  Double.parseDouble(entry.getValue().getText()) ;
+                            totalFixedCost +=  value;
+                        } 
+                        catch (NumberFormatException nfe){
+                            JOptionPane.showMessageDialog( frame, "Por favor, ingrese un dato válido para " + entry.getKey() );
+                            
+                            return;
+                        }
+                    }
+
+                    // total de los Fixed Costs
+                    total_FixedCosts.setText(String.valueOf(totalFixedCost ) );
+                
+                    // para costos variables
+                    double totalVariableCost = 0;
+
+                    // verificar si se han ingresado datos y en ese caso verificar que el dato ingresado sea válido
+                    for (Map.Entry<String, JTextField > entry :  variableCostFields.entrySet( )){
+                        
+                        // try and catch para verificar que sea válido
+                        try{
+                            double value =  Double.parseDouble(entry.getValue().getText());
+                            totalVariableCost +=  value;
+                        } 
+                        catch (NumberFormatException nfe){
+                            JOptionPane.showMessageDialog(frame, "Por favor, ingrese un dato válido para " + entry.getKey());
+                            return;
+                        }
+                    }
+
+                    // total de variable para costos por unidad
+                    variableCostsXUnidad.setText(String.valueOf(totalVariableCost));
+                }
+                
     }
 
-    public void showResults() {
-        double totalFixedCosts = calculateTotalFixedCosts();
-        double sellingPricePerUnit = calculateSellingPricePerUnit();
-        int unitsToSell = calculateExpectedUnitSales();
-        double variableCostsPerUnit = calculateVariableCosts();
+    //--------------------------------CSV GUARDAR DATOS ---------------------------------------------------
+        private void saveResultsToCSV(String fileName, double breakEvenPointUnits, double totalFixedCosts, double variableCostsPerUnit, double pricePerUnit, double unitsToSell) {
+        try{
+            FileWriter writer = new FileWriter(fileName );
 
-        // Calcular los resultados
-        double breakEvenUnits = totalFixedCosts / (sellingPricePerUnit - variableCostsPerUnit);
-        double breakEvenRevenue = breakEvenUnits * sellingPricePerUnit;
-        double contributionMarginRatio = ((sellingPricePerUnit - variableCostsPerUnit) / sellingPricePerUnit) * 100;
+            CSVWriter csvWriter = new CSVWriter(writer ) ;
+            
+            // encabezados 
+            String[] headers = { "Punto de Equilibrio", "Total de Costos Fijos", "Costos Variables por Unidad", "Precio por Unidad", "Unidades a Vender" };
+            csvWriter.writeNext(headers);
 
-        // Mostrar los resultados
-        System.out.println("\n--- Resultados del Punto de Equilibrio ---");
-        System.out.println("Unidades necesarias para cubrir tus costos: " + breakEvenUnits + " unidades");
-        System.out.println("Si vendes tus " + unitsToSell + " unidades previstas, tu ganancia será: $" + (unitsToSell * sellingPricePerUnit - unitsToSell * variableCostsPerUnit - totalFixedCosts));
-        System.out.println("Ventas por unidad: $" + breakEvenRevenue);
-        System.out.println("Índice de margen de contribución: " + contributionMarginRatio + "%");
+            // los datos de los resultados
+            String[] data = { String.valueOf(breakEvenPointUnits), String.valueOf(totalFixedCosts), String.valueOf(variableCostsPerUnit), String.valueOf(pricePerUnit), String.valueOf(unitsToSell) };
+            csvWriter.writeNext(data);
 
-        // Mostrar los datos ingresados por el usuario
-        System.out.println("\nPerfil de Punto de Equilibrio: ");
-        System.out.println("# de unidades");
-        System.out.println(unitsToSell);
-        System.out.println("Precio por Unidad:");
-        System.out.println("$" + sellingPricePerUnit);
-        System.out.println("Costos Fijos");
-        System.out.println("$" + totalFixedCosts);
-        System.out.println("Costos Variables por Unidad");
-        System.out.println("$" + variableCostsPerUnit);
+            // cerrar  el  CSV para no tener problemas
+            csvWriter.close();
+
+            // mostrar al usuario que los resultados se han guardado 
+            JOptionPane.showMessageDialog(frame, "Resultados guardados en " + fileName);
+        } 
+        
+        catch (IOException e){
+            JOptionPane.showMessageDialog(frame, "Error al guardar los resultados en un archivo CSV");
+        }
+    }
+
+    // ----------------------------------- CÁLCULOS ---------------------------------------------------------------
+    private void calcular_Show(){
+        // try and catch para los cálculos, verifica que los datos sean válidos
+        try{
+            // variables 
+            double totalFixedCosts;
+            double totalVariableCosts;
+            double pricePerUnit = Double.parseDouble(precioXUnit.getText());
+            double unitsToSell = Double.parseDouble(UnitsSell.getText());
+            double variableCostsPerUnit;
+    
+            // mira si el campo del costo fijo cuenta con un valor
+            if( !total_FixedCosts.getText().trim().isEmpty( )){
+                totalFixedCosts  = Double.parseDouble(total_FixedCosts.getText() );
+            } 
+            else{
+                // suma  los valores de los campos  de los costos fijos individuales
+                totalFixedCosts = fixedCostFields.values().stream().filter(field -> !field.getText().trim().isEmpty()) .mapToDouble(field -> Double.parseDouble(field.getText()) ).sum();
+            }
+    
+            // mira si el campo del costo variable por unidad tiene un valor
+            if( !variableCostsXUnidad.getText() .trim().isEmpty() ) {
+                variableCostsPerUnit = Double.parseDouble(variableCostsXUnidad.getText());
+            } 
+            else{
+                // suma los valores de los campos de costos variables individuales
+                variableCostsPerUnit = variableCostFields.values().stream().filter( field ->  !field.getText().trim().isEmpty()).mapToDouble(field -> Double.parseDouble(field.getText()) ).sum() ;
+            }
+    
+            // cálculo del punto de equilibrio
+            double breakEvenPointUnits = totalFixedCosts / ( pricePerUnit - variableCostsPerUnit );
+
+            // --------------- MOSTRAR ----------------
+            result_area.setText("El punto de equilibrio es: "  + breakEvenPointUnits +  " unidades.\n");
+            result_area.append("Total de costos fijos: " + totalFixedCosts  + "\n");
+            result_area.append("Costo variable por unidad: "   + variableCostsPerUnit + "\n");
+            result_area.append("Precio por unidad: " + pricePerUnit +    "\n" );
+    
+            // indica si se alcanzó el punto de equilibrio o no, en caso de no alcanzarse se muestra cuántas unidades más se necesitan
+            if( unitsToSell >= breakEvenPointUnits ){
+                result_area.append("\nCon " + unitsToSell  + " unidades, usted ALCANZARÁ el punto de equilibrio.") ;
+            }
+            else {
+                result_area.append("\nCon " + unitsToSell +  " unidades, usted NO alcanzará el punto de equilibrio." ) ;
+                
+                double additionalUnitsNeeded =  breakEvenPointUnits -  unitsToSell;
+
+                result_area.append("\nUnidades adicionales necesarias para alcanzar el punto de equilibrio: " + String.format("%.2f", additionalUnitsNeeded) );
+
+               
+            }
+    
+             // guardar a csv 
+            saveResultsToCSV("resultados.csv", breakEvenPointUnits, totalFixedCosts, variableCostsPerUnit, pricePerUnit, unitsToSell);
+        } 
+        catch (NumberFormatException e){
+            result_area.setText("Por favor, ingrese datos válidos.");
+        }
+
         
     }
-}
 
 
 
+
+    
+ 
 }
