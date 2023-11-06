@@ -157,9 +157,15 @@ public class LoginPage {
             JOptionPane.showMessageDialog(frame, "¡Se ha iniciado sesión con éxito!");
             frame.dispose(); // cerrar la pestaña
 
-            // -------PÁGINA PRINCIPAL -----
-            //Controlador controlador = new Controlador(); // se llama al controlador
-            new GetInfo();
+            // ---------- INFO DE LA EMPRESA --------------
+            //new GetInfo();
+
+            javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    new GetInfo();
+                }
+            });
+    
 
         }
         else{
