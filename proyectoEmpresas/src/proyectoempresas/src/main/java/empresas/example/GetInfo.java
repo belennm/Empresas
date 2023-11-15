@@ -98,7 +98,7 @@ public class GetInfo {
 
 
         // botón para ingresar costos fijos por individual
-        butInFixedCosts = new JButton( "Ingresar Costos Fijos Individuales");
+        butInFixedCosts = new JButton( "Ingresar Costos Fijos Individuales" );
         
         butInFixedCosts.addActionListener( new ActionListener(){
 
@@ -151,21 +151,104 @@ public class GetInfo {
     }
 
     // para poder mostrar GetInfo en MAinPage
-    public void setVisible(boolean visible) {
+    public void setVisible(boolean visible){
         frame.setVisible(visible);
     }
 
-    public JPanel getInfoPanel() {
+    public JPanel getInfoPanel(){
         return panel;
     }
 
-    public void setFrameVisible(boolean visible) {
+    public void setFrameVisible(boolean visible){
         frame.setVisible(visible);
     }
 
-    public boolean isFrameVisible() {
+    public boolean isFrameVisible(){
         return frame.isVisible();
     }
+
+    // NOTA:
+    // Para realizar el siguiente fragmento de código se hizo uso de un ejemplo brindado por la IA de ChatGPT para utilizarlo como referencia.
+    // Con el apoyo de la referencia del siguiente código se realizó la estructura lógica para verificar si los campos se han llenado.
+    // OpenAI.: Realizar una comprobación para verificar que los datos estén llenos en el codigo de java que te brindaré. [consultado el 14/11/2023].
+
+    // public boolean checkFilledItems() {
+    //     // Verifica si los campos principales están llenos
+    //     if (total_FixedCosts.getText().trim().isEmpty() ||
+    //         precioXUnit.getText().trim().isEmpty() ||
+    //         UnitsSell.getText().trim().isEmpty() ||
+    //         variableCostsXUnidad.getText().trim().isEmpty()) {
+    //         return false;
+    //     }
+    
+    //     // Verifica si todos los costos fijos individuales están llenos
+    //     for (JTextField field : fixedCostFields.values()) {
+    //         if (field.getText().trim().isEmpty()) {
+    //             return false;
+    //         }
+    //     }
+    
+    //     // Verifica si todos los costos variables individuales están llenos
+    //     for (JTextField field : variableCostFields.values()) {
+    //         if (field.getText().trim().isEmpty()) {
+    //             return false;
+    //         }
+    //     }
+    
+    //     return true;
+    // }
+    
+       
+    // verifica que los campos estén llenos
+    public boolean isInfoLleno(){
+        
+        if ( total_FixedCosts.getText().trim().isEmpty()  ||
+             precioXUnit.getText().trim().isEmpty()  ||
+             UnitsSell.getText().trim().isEmpty()  ||
+             variableCostsXUnidad.getText().trim().isEmpty()){
+
+            return false;
+        }
+    
+        return true;
+    }
+
+    // para devolver los valores
+
+    public String getTotalFixedCosts() {
+        return total_FixedCosts.getText();
+    }
+
+    public String getPrecioXUnit() {
+        return precioXUnit.getText();
+    }
+
+    public String getUnitsSell() {
+        return UnitsSell.getText();
+    }
+
+    public String getVariableCostsXUnidad() {
+        return variableCostsXUnidad.getText();
+    }
+
+    public String getResultAreaText() {
+        return result_area.getText();
+    }
+    
+    // NOTA:
+    // Para realizar el siguiente fragmento de código se hizo uso de un ejemplo brindado por la IA de ChatGPT para utilizarlo como referencia.
+    // Con el apoyo de la referencia del siguiente código se realizó la estructura lógica para cambiar el color de los componentes.
+    // OpenAI.: Cómo cambiar el color de los componentes del código. [consultado el 29/10/2023].
+
+    //    Cambiar el color de los componentes en una interfaz gráfica de usuario de Swing en Java se puede hacer modificando las propiedades de color de los componentes específicos. En tus clases GetInfo, MainPage, y LoginPage, puedes cambiar los colores de fondo (setBackground) y de primer plano (setForeground) de los componentes como JPanel, JTextField, JButton, etc.
+    //    Cambiar Colores en GetInfo
+    //    Por ejemplo, para cambiar el color de fondo y de texto de un JTextField:
+    //    java
+    //    Copy code
+    //    // Para cambiar el color de fondo a blanco y el color de texto a negro
+    //    total_FixedCosts.setBackground(Color.WHITE);
+    //    total_FixedCosts.setForeground(Color.BLACK);
+
 
     // configurar los colores
     private void setColors(Component component){
@@ -288,12 +371,10 @@ public class GetInfo {
             // cerrar  el  CSV para no tener problemas
             csvWriter.close();
 
-            // mostrar al usuario que los resultados se han guardado 
-            JOptionPane.showMessageDialog(frame, "Resultados guardados en " + fileName);
         } 
         
         catch (IOException e){
-            JOptionPane.showMessageDialog(frame, "Error al guardar los resultados en un archivo CSV");
+            JOptionPane.showMessageDialog(frame, "Error al guardar los resultados.");
         }
     }
 
