@@ -89,21 +89,21 @@ public class Controlador {
             add(Box.createRigidArea(new Dimension(0, verticalSpace)) );
 
             // de personal
-            JButton botonPersonal = new JButton("Personal");
+            JButton botonPersonal = new JButton("Ganancias");
             setButtonProperties(botonPersonal );
             botonPersonal.addActionListener(e -> pagPersonal());
             add(botonPersonal) ;
             add(Box.createRigidArea(new Dimension(0, verticalSpace)));
 
             // de equipo
-            JButton botonBreakPoint = new JButton("Costos");
+            JButton botonBreakPoint = new JButton("Equilibrio");
             setButtonProperties(botonBreakPoint);
             botonBreakPoint.addActionListener(e -> pagBreakPoint() );
             add(botonBreakPoint);
             add(Box.createRigidArea(new Dimension(0, verticalSpace))) ;
 
             // De Presupuesto
-            JButton botonPresupuesto = new JButton("Presupuesto" );
+            JButton botonPresupuesto = new JButton("Consejos" );
             setButtonProperties(botonPresupuesto);
             botonPresupuesto.addActionListener(e -> pagPresupuesto()) ;
             add(botonPresupuesto);
