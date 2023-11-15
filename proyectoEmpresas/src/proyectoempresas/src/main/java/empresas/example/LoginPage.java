@@ -35,12 +35,12 @@ public class LoginPage {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
     
         // usuario box
-        userTextField = new JTextField("belenn", 15);
+        userTextField = new JTextField("Usuario", 15);
         userTextField.setBackground(Color.WHITE);
         userTextField.setForeground(Color.BLACK);
 
         // contraseña box
-        passwordField = new JPasswordField("1234", 15);
+        passwordField = new JPasswordField("Contraseña", 15);
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         userPanel.setBackground(Color.BLACK);
         userPanel.add(userTextField);
