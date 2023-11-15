@@ -82,7 +82,7 @@ public class Controlador {
             add(Box.createVerticalGlue());
 
             // inventario
-            JButton botonInventario = new JButton("Inventario");
+            JButton botonInventario = new JButton("Perfil");
             setButtonProperties(botonInventario) ;
             botonInventario.addActionListener(e -> pagInventario());
             add(botonInventario);
