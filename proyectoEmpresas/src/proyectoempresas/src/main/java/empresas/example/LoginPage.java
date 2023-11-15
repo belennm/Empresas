@@ -158,11 +158,11 @@ public class LoginPage {
             frame.dispose(); // cerrar la pestaña
 
             // ---------- INFO DE LA EMPRESA --------------
-            //new GetInfo();
+            //new MainPage();
 
             javax.swing.SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    new GetInfo();
+                    new MainPage();
                 }
             });
     
