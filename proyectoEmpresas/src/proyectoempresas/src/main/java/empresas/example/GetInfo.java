@@ -48,16 +48,18 @@ public class GetInfo {
     private Map<String, JTextField> variableCostFields = new HashMap<>();
 
     // obtención de información
-    public GetInfo(){
+    public GetInfo(String companyName){
 
         // título de la ventana
-        frame =  new JFrame( "Calculadora de Punto de Equilibrio") ;
+        frame =  new JFrame( "Información") ;
 
         // creación del nuevo panel
         panel  = new JPanel( );
         
         // para que se muestre verticalmente
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS ));
+        //
+        frame.setSize(900, 600);
 
         // establecer el tamaño de cada Field
         total_FixedCosts = new JTextField(10);
@@ -65,8 +67,17 @@ public class GetInfo {
         UnitsSell =  new JTextField(10);
         variableCostsXUnidad = new JTextField(10);
         result_area = new  JTextArea(10, 30);
-        frame.setSize(900, 600 ); // establecer el tamaño de la ventana
-        frame.setLocationRelativeTo(null); // centra la ventana
+        JTextField field = new JTextField(10);
+        field.setBackground(Color.BLACK);
+        field.setForeground(Color.BLACK);
+
+       // color
+       panel.setBackground(Color.BLACK);
+        panel.setForeground(Color.WHITE);
+        frame.getContentPane().setBackground(Color.BLACK);
+        frame.setBackground(Color.BLACK);
+       frame.setLocationRelativeTo(null); // para que aparezca al centro de la pantalla
+        frame.setVisible(true);
 
         
       
@@ -83,6 +94,7 @@ public class GetInfo {
             }
 
         });
+
 
 
         // botón para ingresar costos fijos por individual
@@ -109,6 +121,7 @@ public class GetInfo {
 
         } );
 
+        
         // añadir componentes al panel
         panel.add( new JLabel( "Total de Costos Fijos: "));
         panel.add(total_FixedCosts);
@@ -123,12 +136,78 @@ public class GetInfo {
         panel.add(butCalculate);
         panel.add(new JScrollPane(result_area ));
 
+        //** */
+        setColors(panel);
+
         // crear el frame del panel
         frame.add(panel);
         frame.pack() ;
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        
+
+        
     }
+
+    // para poder mostrar GetInfo en MAinPage
+    public void setVisible(boolean visible) {
+        frame.setVisible(visible);
+    }
+
+    public JPanel getInfoPanel() {
+        return panel;
+    }
+
+    public void setFrameVisible(boolean visible) {
+        frame.setVisible(visible);
+    }
+
+    public boolean isFrameVisible() {
+        return frame.isVisible();
+    }
+
+    // configurar los colores
+    private void setColors(Component component){
+
+        if (component instanceof JPanel || component instanceof JScrollPane){
+            component.setBackground(Color.BLACK);
+            component.setForeground(Color.WHITE);
+        }
+
+        if (component instanceof JButton){
+            ((JButton) component).setBackground(Color.lightGray);
+            ((JButton) component).setForeground(Color.BLACK);
+        }
+
+        // botón punto de equilibrio
+        if (component instanceof JButton && component.equals(butCalculate)){
+            ( (JButton ) component).setBackground( Color.green); 
+            ( (JButton) component).setForeground(Color.black );
+        }
+
+        if(component instanceof JLabel){
+            ( (JLabel) component).setForeground(Color.WHITE );
+        }
+
+
+        if(component instanceof JTextField){
+            component.setBackground(Color.BLACK);
+            component.setForeground(Color.WHITE);
+        }
+
+        if (component instanceof JTextArea){
+            ((JTextArea ) component).setBackground( Color.BLACK);
+            ((JTextArea) component ).setForeground(Color.WHITE );
+        }
+
+        if (component instanceof Container ){
+            for( Component child : ((Container) component).getComponents()){
+                setColors(child);
+            }
+        }
+    }
+
 
     //------------------------- DATOS INDIVIDUALES ------------------------------------------
     // para solicitar costos individuales
