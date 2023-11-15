@@ -8,6 +8,8 @@ import java.awt.*;
  */
 public class Controlador {
 
+    private String username;
+
     public JFrame frame;
     
     // ----- Llamar a login -------
@@ -16,8 +18,6 @@ public class Controlador {
         new LoginPage();
 
     }
-
-    // ---------- INFO DE LA EMPRESA --------------
     
 
     // * --------------------- PÁGINA PRINCIPAL ---------------------------- *  
@@ -96,10 +96,10 @@ public class Controlador {
             add(Box.createRigidArea(new Dimension(0, verticalSpace)));
 
             // de equipo
-            JButton botonEquipo = new JButton("Equipo");
-            setButtonProperties(botonEquipo);
-            botonEquipo.addActionListener(e -> pagEquipo() );
-            add(botonEquipo);
+            JButton botonBreakPoint = new JButton("Costos");
+            setButtonProperties(botonBreakPoint);
+            botonBreakPoint.addActionListener(e -> pagBreakPoint() );
+            add(botonBreakPoint);
             add(Box.createRigidArea(new Dimension(0, verticalSpace))) ;
 
             // De Presupuesto
@@ -154,7 +154,7 @@ public class Controlador {
         new Personal();
     }
 
-    private void pagEquipo() {
+    private void pagBreakPoint() {
         frame.dispose(); // cerrar la pestaña
 
         // para restablecer estilo de UIMAnager
@@ -164,7 +164,7 @@ public class Controlador {
         UIManager.put("OptionPane.messageFont", originalUI_ms);
 
         // abrir la página de equipo
-        new Equipo();
+        new BreakPoint(username);
     }
 
     private void pagPresupuesto() {
