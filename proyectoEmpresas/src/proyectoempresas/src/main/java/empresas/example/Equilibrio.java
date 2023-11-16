@@ -15,13 +15,13 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Representa el punto de equilibrio de la empresa.
  */
-public class BreakPoint {
+public class Equilibrio {
     private JFrame frame;
     private String username;
     private JTable table;
     private DefaultTableModel model;
 
-    public BreakPoint(String username) {
+    public Equilibrio(String username) {
         this.username = username;
 
         frame = new JFrame("Punto de Equilibrio");
