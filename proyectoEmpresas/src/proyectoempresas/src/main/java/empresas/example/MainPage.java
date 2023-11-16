@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.File;
 
 
+
 /**
  * Clase que representa la información de la empresa.
  */
@@ -23,6 +24,7 @@ public class MainPage {
     private JTextField[] textFields;
     private JTextField nameEmpresa; 
     private JButton guardarContinueBoton;
+    private JButton skipButton;
 
     // declaración de variables para almacenar respuestas
     private String companyName; 
@@ -114,6 +116,17 @@ public class MainPage {
             }
         }
     );
+        skipButton = new JButton("Omitir");
+
+        skipButton.addActionListener(new ActionListener() {
+
+            @Override
+
+            public void actionPerformed(ActionEvent a){
+                saveRespuestas();
+            }
+            
+        });
 
 
         // display del botón para continuar 
@@ -123,7 +136,14 @@ public class MainPage {
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);
-       
+
+        //display del botón de omitir
+        JPanel buttonPanel2 = new JPanel();
+        buttonPanel2.add(skipButton);
+
+        frame.add(buttonPanel2, BorderLayout.AFTER_LINE_ENDS);
+
+        frame.setVisible(true);
     }
 
 
