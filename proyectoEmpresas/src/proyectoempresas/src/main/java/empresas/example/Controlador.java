@@ -3,13 +3,20 @@ package empresas.example;
 import javax.swing.*;
 import java.awt.*;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
 /**
  * Representa el controlador del programa.
  */
 public class Controlador {
 
     private String username;
-
+    private Controlador controlador;
     public JFrame frame;
     
     // ----- Llamar a login -------
@@ -18,10 +25,26 @@ public class Controlador {
         new LoginPage();
 
     }
+
+    // ------- Buscar el nombre de la empresa en el csv ---------
+    private String getEmpresaName(String username){
+        try(CSVReader reader = new CSVReader(new FileReader( "empresa_info.csv"))){
+            List<String[]> records = reader.readAll() ;
+            for(String[] record : records ) {
+                if (record.length >= 2 && record[0].equals(username)){
+                    return record[1]; //  el nombre de la empresa correspondiente al usuario 
+                }
+            }
+        } 
+        catch (IOException | CsvException e){
+            e.printStackTrace();
+        }
+        return username;
+    }
     
 
     // * --------------------- PÁGINA PRINCIPAL ---------------------------- *  
-    public void MainPage(){
+    public void MainPage(String username){
         UIManager.put("OptionPane.background", Color.BLACK);
         UIManager.put("Panel.background", Color.BLACK);
 
@@ -29,6 +52,7 @@ public class Controlador {
         UIManager.put("OptionPane.messageForeground", Color.WHITE);  
         Font messageFont = new Font("Trebuchet MS", Font.BOLD, 15);
         UIManager.put("OptionPane.messageFont", messageFont);
+
 
         
         // ---------- PÁGINA INICIO ---------
@@ -38,6 +62,8 @@ public class Controlador {
         frame.setLocationRelativeTo(null);
         
         frame.setLayout(new BorderLayout()); // para el frame
+
+       
 
         // ---------- Llamar Menú de opciones ---------
         SideMenuPanel sideMenu = new SideMenuPanel();
@@ -55,12 +81,38 @@ public class Controlador {
         // alinear el botón  de salir a la derecha
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         topPanel.add(exitButton);
-        frame.add(topPanel, BorderLayout.NORTH); // Añade el panel con el botón en la parte superior
+        frame.add(topPanel, BorderLayout.NORTH); 
 
-        // Show bienvenida en el centro
-        JLabel welcomeLabel = new JLabel("¡Bienvenido a la pantalla de inicio!");
+        // show bienvenida en el centro
+        JLabel welcomeLabel = new JLabel("Empresas " );
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
-        frame.add(welcomeLabel, BorderLayout.CENTER);
+        // tamaño de la fuente y  color 
+        Font labelFont = new Font("Trebuchet MS", Font.BOLD, 20); 
+        welcomeLabel.setFont(labelFont);
+        welcomeLabel.setForeground(Color.WHITE);
+        // un borde para la etiqueta con margen superior
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        frame.add(welcomeLabel, BorderLayout.NORTH);
+
+        // imagen de logo
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.BLACK);
+
+        ImageIcon imageIcon = new ImageIcon("LoginEmpresas.png");
+        Image image = imageIcon.getImage();
+
+        // tamaño de la imagen
+        int newWidth = 300; 
+        int newHeight = 300 ; 
+        Image newImage = image.getScaledInstance(newWidth, newHeight ,  Image.SCALE_SMOOTH);
+
+        // se crea el nuevo ImageIcon
+        ImageIcon newImageIcon =  new ImageIcon(newImage);
+        JLabel imageLabel = new JLabel(newImageIcon);
+
+        panel.add( imageLabel, BorderLayout.CENTER);
+
+        frame.add(panel);
 
         frame.setVisible(true);
     }
@@ -89,10 +141,10 @@ public class Controlador {
             add(Box.createRigidArea(new Dimension(0, verticalSpace)) );
 
             // de personal
-            JButton botonPersonal = new JButton("Ganancias");
-            setButtonProperties(botonPersonal );
-            botonPersonal.addActionListener(e -> pagPersonal());
-            add(botonPersonal) ;
+            JButton botonGanancias = new JButton("Ganancias");
+            setButtonProperties(botonGanancias );
+            botonGanancias.addActionListener(e -> pagPersonal());
+            add(botonGanancias) ;
             add(Box.createRigidArea(new Dimension(0, verticalSpace)));
 
             // de equipo
@@ -103,10 +155,10 @@ public class Controlador {
             add(Box.createRigidArea(new Dimension(0, verticalSpace))) ;
 
             // De Presupuesto
-            JButton botonPresupuesto = new JButton("Consejos" );
-            setButtonProperties(botonPresupuesto);
-            botonPresupuesto.addActionListener(e -> pagPresupuesto()) ;
-            add(botonPresupuesto);
+            JButton botonConsejos = new JButton("Consejos" );
+            setButtonProperties(botonConsejos);
+            botonConsejos.addActionListener(e -> pagPresupuesto()) ;
+            add(botonConsejos);
 
             // para alinear verticalmente
             add(Box.createVerticalGlue());
@@ -138,7 +190,7 @@ public class Controlador {
         UIManager.put("OptionPane.messageFont", originalUI_ms);
 
         // abrir la página de inventario
-        new Inventario();
+        new Perfil( this, username);
     }
 
     private void pagPersonal() {
@@ -151,7 +203,7 @@ public class Controlador {
         UIManager.put("OptionPane.messageFont", originalUI_ms);
 
         // abrir la página de personal
-        new Personal();
+        new Ganancias(this, username);
     }
 
     private void pagBreakPoint() {
@@ -164,7 +216,7 @@ public class Controlador {
         UIManager.put("OptionPane.messageFont", originalUI_ms);
 
         // abrir la página de equipo
-        new BreakPoint(username);
+        new Equilibrio(this, username);
     }
 
     private void pagPresupuesto() {
@@ -177,7 +229,7 @@ public class Controlador {
         UIManager.put("OptionPane.messageFont", originalUI_ms);
 
         // abrir la página de presupuesto
-        new Presupuesto();
+        new Consejos(this, username);
     }
 
     // reset de caracterísitcas de Ui
@@ -185,4 +237,8 @@ public class Controlador {
     Object originalUIpane_ms = UIManager.getDefaults().get("OptionPane.messageForeground");
     Object originalUIpanel_bg = UIManager.getDefaults().get("Panel.background");
     Object originalUI_ms = UIManager.getDefaults().get("OptionPane.messageFont");
+
+    private static Controlador instance;
+
+
 }

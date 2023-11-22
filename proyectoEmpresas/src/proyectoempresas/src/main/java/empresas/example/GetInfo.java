@@ -22,6 +22,11 @@ import java.io.PrintWriter;
  */
 public class GetInfo {
 
+    public static final String totalFixedCosts = null;
+    public static final String breakEvenPointUnits = null;
+    public static final String variableCostsPerUnit = null;
+    public static final String pricePerUnit = null;
+
     private JFrame frame; 
     private JPanel panel;
     private JButton butCalculate;
@@ -440,9 +445,5 @@ public class GetInfo {
         
     }
 
-
-
-
-    
  
 }

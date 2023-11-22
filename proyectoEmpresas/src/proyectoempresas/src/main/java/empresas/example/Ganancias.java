@@ -3,7 +3,7 @@ package empresas.example;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JLabel;  
 
 /**
  * Representa el personal de la empresa.
@@ -11,9 +11,13 @@ import javax.swing.JLabel;
 public class Ganancias {
 
     private JFrame frame;
+    private String username; 
+    private Controlador controlador;
         
 
-    public Ganancias() {
+    public Ganancias(Controlador controlador, String username) {
+        this.controlador = controlador;
+        this.username = username;
         frame = new JFrame("Ganancias");
         frame.setSize(700, 500);
         frame.setLocationRelativeTo(null);
@@ -23,32 +27,14 @@ public class Ganancias {
         JLabel titleLabel = new JLabel("Ganancias");
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Crear un arreglo bidimensional
-            int[][] tabla = new int[5][5];
-            
-    
-            // Llenar la tabla
-            for (int i = 0; i < tabla.length; i++) {
-                for (int j = 0; j < tabla[i].length; j++) {
-                    tabla[i][j] = i * j;
-                }
-            }
-    
-            // Imprimir la tabla
-            for (int i = 0; i < tabla.length; i++) {
-                for (int j = 0; j < tabla[i].length; j++) {
-                    System.out.print(tabla[i][j] + " ");
-                }
-                System.out.println();
-            }
+       
 
         // represar a página principal
         JButton backButton = new JButton("Regresar");
         backButton.addActionListener(e -> {
             frame.dispose();
             // regresar a mainPage
-            Controlador controlador = new Controlador(); 
-            controlador.MainPage(); 
+            controlador.MainPage(username); 
         });
 
         frame.setLayout(new BorderLayout());

@@ -40,7 +40,7 @@ public class LoginPage {
         userTextField.setForeground(Color.BLACK);
 
         // contraseña box
-        passwordField = new JPasswordField("Contraseña", 15);
+        passwordField = new JPasswordField("controlador", 15);
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         userPanel.setBackground(Color.BLACK);
         userPanel.add(userTextField);

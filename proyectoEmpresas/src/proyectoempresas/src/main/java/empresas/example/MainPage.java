@@ -3,7 +3,9 @@ package empresas.example;
 
 import javax.swing.*;
 
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +13,9 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileReader;
 
+import java.util.List; 
 
 
 /**
@@ -24,7 +28,8 @@ public class MainPage {
     private JTextField[] textFields;
     private JTextField nameEmpresa; 
     private JButton guardarContinueBoton;
-    private JButton skipButton;
+    private JPanel buttonPanel;
+
 
     // declaración de variables para almacenar respuestas
     private String companyName; 
@@ -91,6 +96,27 @@ public class MainPage {
         inputPanel.add(getInfoPanel.getInfoPanel(), griid);
 
         frame.add(inputPanel, BorderLayout.CENTER );
+
+        // display del botón para continuar 
+        JPanel buttonPanel = new JPanel();
+        //buttonPanel.setBackground(Color.BLACK);
+
+        // botón omitir
+        JButton omitirBoton = new JButton("Omitir");
+        omitirBoton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                // Verificar si todos los datos ya están ingresados en el CSV
+                if(datosCompletos()){
+                    saveRespuestas();
+                } 
+                else {
+                    JOptionPane.showMessageDialog(frame, "Ingrese todos los datos para continuar.", "Datos Vacíos", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        buttonPanel.add(omitirBoton);
         
 
         guardarContinueBoton  = new JButton("Continuar" );
@@ -105,45 +131,42 @@ public class MainPage {
 
                 //permite continuar solo si los campos están llenos
                 if ( nameEmpresa.getText().trim().isEmpty()  ||  !getInfoPanel.isInfoLleno() ){
-                    JOptionPane.showMessageDialog(frame, "Ingrese todos los datos para continuar.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+                     JOptionPane.showMessageDialog(frame, "Ingrese todos los datos para continuar.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
                 } 
-                else{
+                 else{
 
-                    saveDatos_csv();
-                    saveRespuestas();
-                }
+                     saveDatos_csv();
+                 saveRespuestas();
+                 }
         
             }
         }
     );
-        skipButton = new JButton("Omitir");
 
-        skipButton.addActionListener(new ActionListener() {
+        //buttonPanel.add(guardarContinueBoton);
+        //buttonPanel.add(omitirBoton);
 
-            @Override
+        //frame.add(buttonPanel, BorderLayout.SOUTH);
 
-            public void actionPerformed(ActionEvent a){
-                saveRespuestas();
+        frame.setVisible(true);        
+       
+    }
+
+    
+    // para verificar si se puede omitir
+    private boolean datosCompletos(){
+        try(CSVReader reader = new CSVReader(new FileReader("empresa_info.csv"))) {
+            List<String[]> records = reader.readAll();
+            for(String[] record : records ){
+                if(record.length  >= 2 && record[0].equals(username)){
+                    return true; //  los datos ya están ingresados
+                }
             }
-            
-        });
-
-
-        // display del botón para continuar 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(guardarContinueBoton);
-
-        frame.add(buttonPanel, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
-
-        //display del botón de omitir
-        JPanel buttonPanel2 = new JPanel();
-        buttonPanel2.add(skipButton);
-
-        frame.add(buttonPanel2, BorderLayout.AFTER_LINE_ENDS);
-
-        frame.setVisible(true);
+        } 
+        catch(IOException | CsvException e){
+            e.printStackTrace();
+        }
+        return  false; // faltan datos 
     }
 
 
@@ -161,7 +184,7 @@ public class MainPage {
 
             // abrir mainpage
             Controlador controlador = new Controlador();
-            controlador.MainPage();
+            controlador.MainPage(username);
        
       
 

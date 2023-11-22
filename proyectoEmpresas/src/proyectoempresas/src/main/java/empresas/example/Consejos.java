@@ -12,8 +12,12 @@ import javax.swing.JLabel;
 public class Consejos {
 
     private JFrame frame;
+    private String username; 
+    private Controlador controlador;
 
-    public Consejos() {
+    public Consejos(Controlador controlador, String username) {
+        this.controlador = controlador;
+        this.username = username;
         frame = new JFrame("Consejos");
         frame.setSize(700, 500);
         frame.setLocationRelativeTo(null);
@@ -33,15 +37,13 @@ public class Consejos {
         backButton.addActionListener(e -> {
             frame.dispose();
             // regresar a mainPage
-            Controlador controlador = new Controlador(); 
-            controlador.MainPage();  
+            controlador.MainPage(username);  
         });
 
         frame.setLayout(new BorderLayout());
-        frame.add(textLabel, BorderLayout.CENTER);
-        frame.add(backButton, BorderLayout.SOUTH);
+        frame.add(textLabel , BorderLayout.CENTER);
+        frame.add(backButton , BorderLayout.SOUTH);
 
         frame.setVisible(true);
     }    
-    
 }
